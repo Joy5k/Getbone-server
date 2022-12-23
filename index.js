@@ -51,12 +51,21 @@ async function run() {
             const result = await bookingsCollection.find(query).toArray();
             res.send(result)
         })
-        
+        //delete from bookings collection...Mind IT!!! it is able to delete  which is booked from wishlist
          app.delete('/addData/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) }
-             const result = await bookingsCollection.deleteOne(query);
-             console.log(result);
+            const query = {_id:id}
+             const find = await bookingsCollection.findOne(query);
+             console.log(find);
+            const result = await bookingsCollection.deleteOne(query);
+            res.send(result);
+         })
+         app.delete('/deleteData/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = {_id:ObjectId(id)}
+             const find = await bookingsCollection.findOne(query);
+             console.log(find);
+            const result = await bookingsCollection.deleteOne(query);
             res.send(result);
          })
         //add to wishlist
