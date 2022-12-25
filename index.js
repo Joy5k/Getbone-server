@@ -18,11 +18,38 @@ async function run() {
         const usersCollection = client.db('getbonedb').collection('users')
         const bookingsCollection =client.db('getbonedb').collection('bookingItems')
         const whishListCollection =client.db('getbonedb').collection('whishListItems')
+        const reportedCollection =client.db('getbonedb').collection('reportedItems')
 
         app.post('/user', async (req, res) => {
             const user = req.body;
             console.log(user);
             const result = await usersCollection.insertOne(user);
+            res.send(result);
+        })
+        app.get('/user', async (req, res) => {
+            const email = req.query;
+            const find = await usersCollection.findOne(email);
+            res.send(find)
+         })
+        //update user 
+        app.post('/user/:id', async(req, res) => {
+            const id = req.params.id;
+            const filter = {_id:ObjectId(id)};
+            const options = { upsert: true };
+            const data = req.body
+            console.log(data);
+            const updatedDoc = {
+                $set: {
+                    firstName: data?.firstName,
+                    lastName: data?.lastName,
+                    street: data?.street,
+                    city: data?.city,
+                    state: data?.state,
+                    country: data?.country,
+                    phoneNumber: data?.phoneNumber
+                }
+            }
+            const result = await usersCollection.updateOne(filter, updatedDoc, options);
             res.send(result);
         })
         app.get('/users/admin/:email', async(req, res) => {
@@ -54,17 +81,13 @@ async function run() {
         //delete from bookings collection...Mind IT!!! it is able to delete  which is booked from wishlist
          app.delete('/addData/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id:id}
-             const find = await bookingsCollection.findOne(query);
-             console.log(find);
-            const result = await bookingsCollection.deleteOne(query);
+             const query = { _id: id }
+             const result = await bookingsCollection.deleteOne(query);
             res.send(result);
          })
          app.delete('/deleteData/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id:ObjectId(id)}
-             const find = await bookingsCollection.findOne(query);
-             console.log(find);
+             const query = { _id: ObjectId(id) }
             const result = await bookingsCollection.deleteOne(query);
             res.send(result);
          })
@@ -105,6 +128,23 @@ async function run() {
             const user = await usersCollection.findOne(query);
             res.send({ isAdmin: user?.role === 'admin' });
            })
+        app.post('/report', async (req, res) => {
+            const data = req.body;
+            const result = await reportedCollection.insertOne(data);
+            res.send(result)
+           })
+     //get reported products
+        app.get('/reported', async (req, res) => {
+            const result = await reportedCollection.find().toArray();
+            res.send(result)
+        })  
+     // delete the reported products from the database
+        app.delete('/reported/:id', async (req, res) => {
+            const id = req.params.id;
+            const query={_id:ObjectId(id)}
+            const result = await reportedCollection.deleteOne(query)
+            res.send(result)
+        })   
         
     }
     finally {
