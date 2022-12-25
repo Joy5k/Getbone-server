@@ -19,6 +19,7 @@ async function run() {
         const bookingsCollection =client.db('getbonedb').collection('bookingItems')
         const whishListCollection =client.db('getbonedb').collection('whishListItems')
         const reportedCollection =client.db('getbonedb').collection('reportedItems')
+        const productsCollection =client.db('getbonedb').collection('allProducts')
 
         app.post('/user', async (req, res) => {
             const user = req.body;
@@ -145,6 +146,14 @@ async function run() {
             const result = await reportedCollection.deleteOne(query)
             res.send(result)
         })   
+
+        //seller route all api create here
+         //add products
+        app.put('/addProduct', async (req, res) => {
+            const addProduct = req.body;
+            const result = await productsCollection.insertOne(addProduct);
+            res.send(result)
+        })
         
     }
     finally {
