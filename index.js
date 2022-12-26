@@ -161,6 +161,21 @@ async function run() {
             const result = await productsCollection.find(query).toArray();
             res.send(result)
         })
+
+        // get all laptop and show the client site in laptop section
+        app.get('/laptop', async (req, res) => {
+            const laptop = req.query.category;
+            const query = { category: laptop }
+            const results = await productsCollection.find(query).toArray();
+            res.send(results)
+        });
+        //get all desktop and show the client site in desktop section and homepage
+        app.get('/desktop', async (req, res) => {
+            const category = req.query.category;
+            const query = { category: category }
+            const results = await productsCollection.find(query).toArray();
+            res.send(results)
+        })
     }
     finally {
         
