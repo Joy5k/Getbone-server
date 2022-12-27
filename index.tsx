@@ -74,7 +74,7 @@ async function run() {
 
         //get all booked items
         app.get('/addData', async (req, res) => { 
-            email = req.query.email
+          const  email = req.query.email
             const query = { email: email };
             const result = await bookingsCollection.find(query).toArray();
             res.send(result)
@@ -100,7 +100,7 @@ async function run() {
      
         })
         app.get('/wishlist', async (req, res) => { 
-          email = req.query.email
+        const  email = req.query.email
             const query = { email: email };
             const result = await whishListCollection.find(query).toArray();
             res.send(result)
