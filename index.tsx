@@ -31,7 +31,15 @@ async function run() {
             const email = req.query;
             const find = await usersCollection.findOne(email);
             res.send(find)
-         })
+        })
+        app.get('/details/:id', async (req, res) => { 
+            const id = req.params.id;
+            const query = {_id:ObjectId(id)}
+            console.log(query);
+            const result = await productsCollection.find(query).toArray()
+            res.send(result)
+
+        })
         //update user 
         app.post('/user/:id', async(req, res) => {
             const id = req.params.id;
@@ -175,6 +183,13 @@ async function run() {
             const query = { category: category }
             const results = await productsCollection.find(query).toArray();
             res.send(results)
+        })
+        //get all phone
+        app.get('/phone',async (req, res) => {
+            const category = req.query.category;
+            const query = { category: category }
+            const results = await productsCollection.find(query).toArray();
+            res.send(results);
         })
     }
     finally {
