@@ -23,7 +23,7 @@ async function run() {
 
         app.post('/user', async (req, res) => {
             const user = req.body;
-            console.log(user);
+          
             const result = await usersCollection.insertOne(user);
             res.send(result);
         })
@@ -35,7 +35,6 @@ async function run() {
         app.get('/details/:id', async (req, res) => { 
             const id = req.params.id;
             const query = {_id:ObjectId(id)}
-            console.log(query);
             const result = await productsCollection.find(query).toArray()
             res.send(result)
 
@@ -46,7 +45,7 @@ async function run() {
             const filter = {_id:ObjectId(id)};
             const options = { upsert: true };
             const data = req.body
-            console.log(data);
+
             const updatedDoc = {
                 $set: {
                     firstName: data?.firstName,
@@ -127,7 +126,7 @@ async function run() {
         })
         app.delete('/wishlist/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id:ObjectId(id)}
+            const query = {_id:id}
             const result = await whishListCollection.deleteOne(query);
             res.send(result);
          })
@@ -190,6 +189,20 @@ async function run() {
             const query = { category: category }
             const results = await productsCollection.find(query).toArray();
             res.send(results);
+        })
+        // admin route
+        app.get('/allusers/:id', async (req, res) => { 
+            const users = req.params.id;
+            const query = {role:users};
+            const result = await usersCollection.find(query).toArray();
+            res.send(result)
+        })
+        //delete user
+        app.delete('/allusers/:id', async (req, res) => { 
+            const id = req.params.id;
+            const query={_id:ObjectId(id)}
+            const result = await usersCollection.deleteOne(query);
+            res.send(result)
         })
     }
     finally {
