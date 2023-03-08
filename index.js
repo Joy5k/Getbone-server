@@ -126,7 +126,7 @@ async function run() {
         })
         app.delete('/wishlist/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id:id}
+            const query = {_id:ObjectId(id)}
             const result = await whishListCollection.deleteOne(query);
             res.send(result);
          })
