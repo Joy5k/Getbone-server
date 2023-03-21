@@ -99,6 +99,15 @@ async function run() {
             const result = await bookingsCollection.deleteOne(query);
             res.send(result);
          })
+        //search Products
+        app.get('/search/?:id', async (req, res) => {
+            const text = req.params.id;
+            console.log(text);
+            const query ={title:text}
+            const products = await productsCollection.find(query).toArray()
+            res.send(products)
+            console.log(products,'second is ', query);
+         })
         //add to wishlist
         app.post('/addwishlist/:id', async (req, res) => { 
             const data = req.body;
@@ -140,7 +149,8 @@ async function run() {
             const data = req.body;
             const result = await reportedCollection.insertOne(data);
             res.send(result)
-           })
+        })
+        
      //get reported products
         app.get('/reported', async (req, res) => {
             const result = await reportedCollection.find().toArray();
@@ -183,6 +193,7 @@ async function run() {
             const results = await productsCollection.find(query).toArray();
             res.send(results)
         })
+
         //get all phone
         app.get('/phone',async (req, res) => {
             const category = req.query.category;
@@ -190,6 +201,7 @@ async function run() {
             const results = await productsCollection.find(query).toArray();
             res.send(results);
         })
+
         // admin route
         app.get('/allusers/:id', async (req, res) => { 
             const users = req.params.id;
@@ -197,12 +209,20 @@ async function run() {
             const result = await usersCollection.find(query).toArray();
             res.send(result)
         })
+        
         //delete user
         app.delete('/allusers/:id', async (req, res) => { 
             const id = req.params.id;
             const query={_id:ObjectId(id)}
             const result = await usersCollection.deleteOne(query);
             res.send(result)
+        })
+        //payment 
+        app.get('/payment/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await bookingsCollection.findOne(query);
+            res.send(result);
         })
     }
     finally {
