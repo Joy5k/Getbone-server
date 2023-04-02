@@ -257,6 +257,14 @@ async function run() {
             const update= await bookingsCollection.updateOne(filter,updatedDoc,options);
             res.send(result)
         })
+        // set Products Review
+        app.get('/review/:id', async (req, res) => {
+            const id = req.params.id;
+            const find ={_id:ObjectId(id)}
+            const result = await productsCollection.findOne(find)
+            res.send(result)
+        })
+
     }
     finally {
         
