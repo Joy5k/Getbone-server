@@ -264,7 +264,32 @@ async function run() {
             const result = await productsCollection.findOne(find)
             res.send(result)
         })
-
+    // send the userInfo on the review route
+        app.get('/email/:id', async (req, res) => {
+            const email = req.params.id
+            const query = { email: email }
+            console.log(query);
+            const result = await usersCollection.findOne(query)
+            res.send(result)
+        })
+        // add the customer review on the selected Product
+        app.post('/review/:id', async (req, res) => {
+            const id = req.params.id;
+            const data=req.body
+            const options = { upsert: true };
+            const filter = { _id: ObjectId(id) }
+            const customerReview = Array.isArray(data) ? [...data] : [data];
+            const updatedDoc = {
+                $push: {
+                  customerReview: {
+                    $each: customerReview,
+                  },
+                },
+              };
+            const updated=await productsCollection.updateOne(filter,updatedDoc,options)
+            res.send(updated)
+            console.log(filter);
+        })
     }
     finally {
         
