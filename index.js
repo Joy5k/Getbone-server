@@ -1,5 +1,7 @@
+const bcrypt =require ("bcrypt");
 const express = require('express');
 const cors = require('cors');
+
 const { MongoClient, ServerApiVersion, ObjectId, Admin } = require('mongodb');
 // const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -15,16 +17,18 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run() {
     try {
-        const usersCollection = client.db('getbonedb').collection('users')
-        const bookingsCollection =client.db('getbonedb').collection('bookingItems')
-        const whishListCollection =client.db('getbonedb').collection('whishListItems')
-        const reportedCollection =client.db('getbonedb').collection('reportedItems')
-        const productsCollection =client.db('getbonedb').collection('allProducts')
-        const paymentCollection = client.db('getbonedb').collection('payments')
+     const usersCollection = client.db('getbonedb').collection('users')
+     const bookingsCollection =client.db('getbonedb').collection('bookingItems')
+     const whishListCollection =client.db('getbonedb').collection('whishListItems')
+    const reportedCollection =client.db('getbonedb').collection('reportedItems')
+     const productsCollection =client.db('getbonedb').collection('allProducts')
+     const paymentCollection = client.db('getbonedb').collection('payments')
         app.post('/user', async (req, res) => {
-            const user = req.body;
-          
-            const result = await usersCollection.insertOne(user);
+            const {userPassword,...user} = req.body;
+            const hashPassword = await bcrypt.hash(userPassword, 12);
+            const finalData={...user,password:hashPassword}
+            const result = await usersCollection.insertOne(finalData);
+        
             res.send(result);
         })
         app.get('/user', async (req, res) => {
@@ -44,7 +48,7 @@ async function run() {
             const id = req.params.id;
             const filter = {_id:ObjectId(id)};
             const options = { upsert: true };
-            const data = req.body
+            const data =await req.body
             console.log(data?.imageUrl,'this is');
 
             const updatedDoc = {
