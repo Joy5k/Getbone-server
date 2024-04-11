@@ -313,12 +313,14 @@ async function run() {
       res.send(updated);
       console.log(filter);
     });
+      // create coupon 
     app.post("/coupon", async (req, res) => {
       const coupon = req.body;
       console.log(coupon);
       const result = await couponCollection.insertOne({ coupon });
       return result;
     });
+      //get the coupon from the database
     app.get("/coupon", async (req, res) => {
       const couponCode = req.body;
       const result = await couponCollection.findOne({ coupon: couponCode });
